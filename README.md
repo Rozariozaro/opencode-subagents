@@ -64,8 +64,22 @@ The system enforces a **read-before-write discipline**, routes all implementatio
 | `explore` | subagent | `github-copilot/claude-haiku-4.5` | 0.0 | Read-only analyst; discovers architecture, traces dependencies, identifies conventions |
 | `implementer` | subagent | `github-copilot/claude-sonnet-4.6` | 0.2 | Code executor; writes/edits code, runs builds/tests, reports outcomes |
 | `reviewer` | subagent | `github-copilot/claude-opus-4.6` | 0.1 | Quality gate; validates correctness, consistency, maintainability, safety |
-| `doc-writer` | subagent | `github-copilot/claude-haiku-4.5` | 0.2 | Documentation maintainer; updates changelogs, READMEs, and docs only |
+| `doc-writer` | subagent | `github-copilot/claude-haiku-4.5` | 0.2 | Documentation maintainer; updates changelogs, READMEs, and docs only. **Trigger phrases**: "update readme", "update docs", "write changelog", "document this" |
 | `websearch` | subagent | `github-copilot/claude-sonnet-4.6` | 0.1 | Technical research analyst; framework comparisons, OSS discovery, API research |
+
+### Agent Routing
+
+The `description` field in each agent's frontmatter is what OpenCode uses to route tasks. Key routing rules:
+
+| If you want to… | Use this agent |
+|-----------------|---------------|
+| Update README, CHANGELOG, or any `.md` file | `@doc-writer` |
+| Write or edit source code (`.kt`, `.swift`, `.ts`, etc.) | `@implementer` |
+| Explore the codebase, find files, trace dependencies | `@explore` |
+| Research libraries, APIs, or external tools | `@websearch` |
+| Review code for correctness and safety | `@reviewer` |
+
+> **Tip:** Use explicit trigger phrases for `@doc-writer`: *"update readme"*, *"write changelog"*, *"document this"*, *"update docs"*. Without these, the router may default to `@implementer` for any file-modification task.
 
 ### Agent Responsibilities
 
