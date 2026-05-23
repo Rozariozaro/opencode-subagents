@@ -60,12 +60,12 @@ The system enforces a **read-before-write discipline**, routes all implementatio
 
 | Agent | Mode | Model | Temp | Role |
 |-------|------|-------|------|------|
-| `orchestrator` | primary | claude-sonnet-4.6 | 0.1 | Central coordinator; analyzes intent, plans, delegates, verifies |
-| `explore` | subagent | claude-haiku-4.5 | 0.0 | Read-only analyst; discovers architecture, traces dependencies, identifies conventions |
-| `implementer` | subagent | claude-sonnet-4.6 | 0.2 | Code executor; writes/edits code, runs builds/tests, reports outcomes |
-| `reviewer` | subagent | claude-opus-4.6 | 0.1 | Quality gate; validates correctness, consistency, maintainability, safety |
-| `doc-writer` | subagent | claude-haiku-4.5 | 0.2 | Documentation maintainer; updates changelogs, READMEs, and docs only |
-| `websearch` | subagent | claude-sonnet-4.6 | 0.1 | Technical research analyst; framework comparisons, OSS discovery, API research |
+| `orchestrator` | primary | `github-copilot/claude-sonnet-4.6` | 0.1 | Central coordinator; analyzes intent, plans, delegates, verifies |
+| `explore` | subagent | `github-copilot/claude-haiku-4.5` | 0.0 | Read-only analyst; discovers architecture, traces dependencies, identifies conventions |
+| `implementer` | subagent | `github-copilot/claude-sonnet-4.6` | 0.2 | Code executor; writes/edits code, runs builds/tests, reports outcomes |
+| `reviewer` | subagent | `github-copilot/claude-opus-4.6` | 0.1 | Quality gate; validates correctness, consistency, maintainability, safety |
+| `doc-writer` | subagent | `github-copilot/claude-haiku-4.5` | 0.2 | Documentation maintainer; updates changelogs, READMEs, and docs only |
+| `websearch` | subagent | `github-copilot/claude-sonnet-4.6` | 0.1 | Technical research analyst; framework comparisons, OSS discovery, API research |
 
 ### Agent Responsibilities
 
@@ -120,14 +120,16 @@ Phase 7: Reporting     → Summarize changes, caveats, follow-up items
 
 ## Permission Matrix
 
-| Agent | Read | Edit | Bash | Delegate | Web |
-|-------|------|------|------|----------|-----|
-| Orchestrator | ✅ | ❌ | ❌ | ✅ | ❌ |
-| Explore | ✅ | ❌ | ❌ | ❌ | ❌ |
-| Implementer | ✅ | ✅ | ✅ (guarded) | ❌ | ❌ |
-| Reviewer | ✅ | ❌ | ❌ | ❌ | ❌ |
-| Doc-Writer | ✅ (docs only) | ✅ (docs only) | ❌ | ❌ | ❌ |
-| Websearch | ❌ | ❌ | ❌ | ❌ | ✅ |
+| Agent | Read | Edit | Bash | Delegate | Web | Skills |
+|-------|------|------|------|----------|-----|--------|
+| Orchestrator | ✅ | ❌ | ❌ (git read-only) | ✅ | ❌ | All |
+| Explore | ✅ | ❌ | ❌ (git/grep only) | ❌ | ❌ | graphify, zoom-out, diagnose |
+| Implementer | ✅ | ✅ | ✅ (guarded) | ❌ | ✅ | — |
+| Reviewer | ✅ | ❌ | ❌ (git/grep only) | ❌ | ❌ | zoom-out, graphify |
+| Doc-Writer | ✅ (docs only) | ✅ (docs only) | ❌ (git/grep only) | ❌ | ❌ | — |
+| Websearch | ❌ | ❌ | ❌ | ❌ | ✅ | — |
+
+> **Notes:** Bash permissions are restricted per agent — Orchestrator allows only read-only git commands; Explore, Reviewer, and Doc-Writer allow only `git`, `grep`, and `find`; Implementer has guarded bash (destructive operations require confirmation). The Implementer also has web-fetch access for documentation lookups during implementation.
 
 ## Design Decisions
 
