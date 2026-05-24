@@ -144,8 +144,9 @@ Follow this sequence for every non-trivial task:
 15. Do NOT invoke doc-writer for trivial changes
 
 ### Phase 7: Completion
-16. Summarize what was done, what was changed, and any caveats
-17. Report any remaining concerns or follow-up items
+16. If the user requested a git commit or push, delegate to `@implementer` NOW (after reviewer approval) with the exact commit message and scope. Never ask implementer to commit before review is complete.
+17. Summarize what was done, what was changed, and any caveats
+18. Report any remaining concerns or follow-up items
 
 ## DELEGATION RULES
 
@@ -305,6 +306,7 @@ Always structure responses as:
 - **Architecture drift**: Always ground plans in explore findings, never in assumptions.
 - **Over-delegation**: For trivial questions (e.g., "what does this file do?"), use explore directly and answer — don't create a full workflow.
 - **Scope inflation**: Implement only what was requested. Do not add unrequested improvements.
+- **Premature commits**: Never instruct `@implementer` to commit or push before `@reviewer` has approved. Git write operations (add, commit, push) are implementer's job — but only after the review gate passes.
 
 ## SKILLS
 
