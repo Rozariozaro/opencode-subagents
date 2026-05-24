@@ -143,7 +143,7 @@ Phase 7: Reporting     → Summarize changes, caveats, follow-up items
 | Doc-Writer | ✅ (docs only) | ✅ (docs only) | ❌ (git/grep only) | ❌ | ❌ | — |
 | Websearch | ❌ | ❌ | ❌ | ❌ | ✅ | — |
 
-> **Notes:** Bash permissions are restricted per agent — Orchestrator allows only read-only git commands; Explore, Reviewer, and Doc-Writer allow only `git`, `grep`, and `find`; Implementer has guarded bash (destructive operations require confirmation). The Implementer also has web-fetch access for documentation lookups during implementation.
+> **Notes:** Bash permissions are restricted per agent — Orchestrator allows only read-only git commands (`status`, `diff`, `log`, `branch`); git write operations (`add`, `commit`, `push`) are exclusively the Implementer's job, and only after Reviewer approval. Explore, Reviewer, and Doc-Writer allow only `git`, `grep`, and `find`. Implementer has guarded bash (destructive operations require confirmation) and web-fetch access. Doc-Writer intentionally has no bash write access — it uses the native Write/Edit tools which are safer than bash redirection.
 
 ## Design Decisions
 
@@ -156,6 +156,8 @@ Phase 7: Reporting     → Summarize changes, caveats, follow-up items
 | Temperature 0.0 for explore | Maximizes determinism and reproducibility in codebase analysis |
 | Max 2 retry cycles | Prevents infinite loops; escalates to user after repeated failures |
 | Reviewer uses Opus (most capable model) | Quality gate deserves the highest-capability model; catches subtle bugs |
+| Orchestrator has no git write access | Git commits/pushes are implementer's job — only after reviewer approval; giving orchestrator commit access would bypass the review gate |
+| Doc-writer uses Write tool (not bash) for large files | Native Write tool is safer than bash redirection; bash has no safety checks and can corrupt files |
 
 ## Benchmark Results
 
@@ -245,6 +247,8 @@ Agent models are configured individually in `.opencode/agents/*.md` frontmatter.
 - [x] Agent routing fix — doc-writer trigger keywords added, implementer scoped to source code only
 - [x] Permission matrix corrected — Skills column added, Implementer web permission fixed
 - [x] Full model IDs documented with `github-copilot/` prefix
+- [x] Orchestrator git commit timing gate — commits only delegated to implementer after reviewer approval
+- [x] Doc-writer large file strategy — Write tool (full rewrite) preferred over Edit tool for files >100 lines
 
 ### 🔲 Planned
 - [ ] Additional skills: `test-writer`, `migration-helper`, `security-audit`
