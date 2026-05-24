@@ -242,6 +242,9 @@ Agent models are configured individually in `.opencode/agents/*.md` frontmatter.
 - [x] Empirical validation on real iOS project
 - [x] Architecture documentation (`SYSTEM-OVERVIEW.md`)
 - [x] Original requirements captured (`Goal.md`)
+- [x] Agent routing fix — doc-writer trigger keywords added, implementer scoped to source code only
+- [x] Permission matrix corrected — Skills column added, Implementer web permission fixed
+- [x] Full model IDs documented with `github-copilot/` prefix
 
 ### 🔲 Planned
 - [ ] Additional skills: `test-writer`, `migration-helper`, `security-audit`
@@ -258,6 +261,7 @@ Agent models are configured individually in `.opencode/agents/*.md` frontmatter.
 - Automated benchmark regression testing in CI
 - Visual workflow diagram generator from agent definitions
 - Cost estimation before delegating complex tasks
+- Agent description keyword tuning for improved routing accuracy
 
 ## Contributing
 
