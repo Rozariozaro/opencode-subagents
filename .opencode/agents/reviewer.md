@@ -1,7 +1,7 @@
 ---
 description: Code quality gate and architectural validator. Reviews implementations for correctness, consistency, maintainability, and safety. Provides structured approve/reject decisions with actionable feedback. Never modifies source files.
 mode: subagent
-model: github-copilot/claude-opus-4.6
+model: github-copilot/claude-opus-4-6
 temperature: 0.1
 permission:
   edit: deny

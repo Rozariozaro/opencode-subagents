@@ -1,7 +1,7 @@
 ---
 description: Read-only codebase analyst. Discovers architecture, traces dependencies, identifies conventions and patterns, finds relevant files. Use for any codebase exploration, context gathering, or pre-implementation research. Never modifies files.
 mode: subagent
-model: github-copilot/claude-haiku-4.5
+model: github-copilot/gpt-5-mini
 temperature: 0.0
 permission:
   edit: deny

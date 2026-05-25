@@ -1,7 +1,7 @@
 ---
 description: Central coordinator for multi-agent workflows. Decomposes tasks, delegates to explore/implementer/reviewer/doc-writer agents, enforces sequencing, and manages retry/escalation. Use as the primary entry point for all non-trivial engineering tasks.
 mode: primary
-model: github-copilot/claude-opus-4.6
+model: github-copilot/claude-opus-4-6
 temperature: 0.1
 permission:
   edit: deny

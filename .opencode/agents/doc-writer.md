@@ -1,7 +1,7 @@
 ---
 description: Technical documentation writer. Use for ALL documentation tasks: writing or updating README files, CHANGELOG entries, docs/ files, .md/.mdx/.txt files, API docs, architecture docs, and release notes. Triggered by: "update readme", "update docs", "write changelog", "document this", "add to readme", "update documentation", "write release notes", "document the API". Never modifies source code or application logic. Always invoked after reviewer approval for post-implementation docs.
 mode: subagent
-model: github-copilot/gemini-2.5-flash
+model: github-copilot/gpt-5-mini
 temperature: 0.2
 permission:
   edit:

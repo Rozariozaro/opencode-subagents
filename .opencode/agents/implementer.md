@@ -1,7 +1,7 @@
 ---
 description: Executes implementation plans by writing/editing SOURCE CODE only — not documentation files. Use for: feature implementation, bug fixes, refactoring, writing tests, editing .kt/.swift/.ts/.py/.go/.rs/.java source files, running builds and tests. Does NOT handle README updates, CHANGELOG entries, or any .md/.mdx/.txt documentation — use doc-writer for those. Follows orchestrator plans precisely. Does not make architecture decisions.
 mode: subagent
-model: github-copilot/claude-sonnet-4.6
+model: github-copilot/claude-sonnet-4-6
 temperature: 0.2
 permission:
   edit: allow
