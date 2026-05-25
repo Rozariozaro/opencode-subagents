@@ -60,11 +60,11 @@ The system enforces a **read-before-write discipline**, routes all implementatio
 
 | Agent | Mode | Model | Temp | Role |
 |-------|------|-------|------|------|
-| `orchestrator` | primary | `github-copilot/claude-sonnet-4.6` | 0.1 | Central coordinator; analyzes intent, plans, delegates, verifies |
+| `orchestrator` | primary | `github-copilot/claude-opus-4.6` | 0.1 | Central coordinator; analyzes intent, plans, delegates, verifies |
 | `explore` | subagent | `github-copilot/claude-haiku-4.5` | 0.0 | Read-only analyst; discovers architecture, traces dependencies, identifies conventions |
 | `implementer` | subagent | `github-copilot/claude-sonnet-4.6` | 0.2 | Code executor; writes/edits code, runs builds/tests, reports outcomes |
 | `reviewer` | subagent | `github-copilot/claude-opus-4.6` | 0.1 | Quality gate; validates correctness, consistency, maintainability, safety |
-| `doc-writer` | subagent | `github-copilot/claude-haiku-4.5` | 0.2 | Documentation maintainer; updates changelogs, READMEs, and docs only. **Trigger phrases**: "update readme", "update docs", "write changelog", "document this" |
+| `doc-writer` | subagent | `github-copilot/gemini-2.5-flash` | 0.2 | Documentation maintainer; updates changelogs, READMEs, and docs only |
 | `websearch` | subagent | `github-copilot/claude-sonnet-4.6` | 0.1 | Technical research analyst; framework comparisons, OSS discovery, API research |
 
 ### Agent Routing
@@ -143,7 +143,7 @@ Phase 7: Reporting     → Summarize changes, caveats, follow-up items
 | Doc-Writer | ✅ (docs only) | ✅ (docs only) | ❌ (git/grep only) | ❌ | ❌ | — |
 | Websearch | ❌ | ❌ | ❌ | ❌ | ✅ | — |
 
-> **Notes:** Bash permissions are restricted per agent — Orchestrator allows only read-only git commands (`status`, `diff`, `log`, `branch`); git write operations (`add`, `commit`, `push`) are exclusively the Implementer's job, and only after Reviewer approval. Explore, Reviewer, and Doc-Writer allow only `git`, `grep`, and `find`. Implementer has guarded bash (destructive operations require confirmation) and web-fetch access. Doc-Writer intentionally has no bash write access — it uses the native Write/Edit tools which are safer than bash redirection.
+> **Notes:** Bash permissions are restricted per agent — Orchestrator allows only read-only git commands (`status`, `diff`, `log`, `branch`); git write operations (`add`, `commit`, `push`) are exclusively the Implementer's job, and only after Reviewer approval. Explore, Reviewer, and Doc-Writer allow only `git`, `grep`, and `find`. Implementer has guarded bash (destructive operations require confirmation) and web-fetch access. Doc-Writer has no bash access except git log/diff — it uses native Read/Glob/Grep for discovery and Write/Edit tools for file modification, preventing token-wasting bash fallback failures.
 
 ## Design Decisions
 
@@ -158,6 +158,7 @@ Phase 7: Reporting     → Summarize changes, caveats, follow-up items
 | Reviewer uses Opus (most capable model) | Quality gate deserves the highest-capability model; catches subtle bugs |
 | Orchestrator has no git write access | Git commits/pushes are implementer's job — only after reviewer approval; giving orchestrator commit access would bypass the review gate |
 | Doc-writer uses Write tool (not bash) for large files | Native Write tool is safer than bash redirection; bash has no safety checks and can corrupt files |
+| Doc-writer uses Gemini Flash (not Haiku) | Gemini 2.5 Flash follows structured tool-use instructions reliably; Haiku tries bash commands first, fails, then retries with native tools — wasting tokens |
 
 ## Benchmark Results
 
@@ -249,6 +250,9 @@ Agent models are configured individually in `.opencode/agents/*.md` frontmatter.
 - [x] Full model IDs documented with `github-copilot/` prefix
 - [x] Orchestrator git commit timing gate — commits only delegated to implementer after reviewer approval
 - [x] Doc-writer large file strategy — Write tool (full rewrite) preferred over Edit tool for files >100 lines
+- [x] Doc-writer model upgraded to Gemini 2.5 Flash — eliminates bash-first failure pattern
+- [x] Doc-writer bash permissions stripped (grep/rg/find removed) — forces native tool usage
+- [x] Orchestrator anti-pattern: content generation before delegation explicitly prevented
 
 ### 🔲 Planned
 - [ ] Additional skills: `test-writer`, `migration-helper`, `security-audit`
