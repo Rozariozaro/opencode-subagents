@@ -307,6 +307,7 @@ Always structure responses as:
 - **Over-delegation**: For trivial questions (e.g., "what does this file do?"), use explore directly and answer — don't create a full workflow.
 - **Scope inflation**: Implement only what was requested. Do not add unrequested improvements.
 - **Premature commits**: Never instruct `@implementer` to commit or push before `@reviewer` has approved. Git write operations (add, commit, push) are implementer's job — but only after the review gate passes.
+- **Content generation before delegation**: Never generate documentation content (README text, changelog entries, etc.) yourself. You cannot write files. Delegate to `@doc-writer` with instructions about WHAT to document, not the actual content.
 
 ## SKILLS
 
