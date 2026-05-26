@@ -25,27 +25,33 @@ This project implements a **6-agent, 6-skill OpenCode system** with strict separ
 - 📦 Long-lived, modular codebases
 - 🤖 AI-assisted development at scale
 
-The system enforces a **read-before-write discipline**, routes all implementations through a dedicated reviewer, and restricts each agent to only the permissions it needs — preventing hallucination, scope creep, and accidental damage.
+The system enforces a **read-before-write discipline**, routes all implementations through a dedicated auditor, and restricts each agent to only the permissions it needs — preventing hallucination, scope creep, and accidental damage.
 
 ## Architecture
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│                     ORCHESTRATOR                        │
-│         (Plans · Delegates · Verifies · Reports)        │
-└────────┬──────────┬──────────┬──────────┬──────────────┘
-         │          │          │          │
-    ┌────▼───┐ ┌────▼────┐ ┌──▼──────┐ ┌▼──────────┐
-    │EXPLORE │ │IMPLEMENT│ │REVIEWER │ │DOC-WRITER │
-    │        │ │   -ER   │ │         │ │           │
-    │Read-   │ │Write ·  │ │Approve/ │ │Docs files │
-    │only    │ │Edit ·   │ │Reject   │ │only       │
-    │analyst │ │Build ·  │ │         │ │           │
-    │        │ │Test     │ │         │ │           │
-    └────────┘ └─────────┘ └─────────┘ └───────────┘
+┌──────────────────────────────────────────────────────────┐
+│                       ARCHITECT                          │
+│         (Grills · Plans · Confirms · Hands off)          │
+└────────────────────────┬─────────────────────────────────┘
+                         │ confirmed plan
+┌────────────────────────▼─────────────────────────────────┐
+│                       CONDUCTOR                          │
+│         (Delegates · Escalates · Verifies · Reports)     │
+└────────┬──────────┬──────────┬──────────────────────────┘
+         │          │          │
+    ┌────▼───┐ ┌────▼────┐ ┌──▼──────┐
+    │ SCOUT  │ │ BUILDER │ │ AUDITOR │
+    │        │ │         │ │         │
+    │Read-   │ │Write ·  │ │Approve/ │
+    │only    │ │Edit ·   │ │Reject / │
+    │analyst │ │Build ·  │ │Clarify  │
+    │        │ │Test ·   │ │         │
+    │        │ │Docs*    │ │         │
+    └────────┘ └─────────┘ └─────────┘
          │
     ┌────▼──────┐
-    │WEBSEARCH  │
+    │RESEARCHER │
     │           │
     │Web-fetch  │
     │only       │
@@ -54,18 +60,20 @@ The system enforces a **read-before-write discipline**, routes all implementatio
     └───────────┘
 ```
 
-**Execution flow**: Orchestrator → Explore/Websearch → Plan → Implement → Review → (Doc-write) → Report
+*Builder owns docs files that are directly affected by the implementation.
+
+**Execution flow**: Architect (plan) → Conductor (execute) → Scout/Researcher → Builder → Auditor → Report
 
 ## Agents
 
 | Agent | Mode | Model | Temp | Role |
 |-------|------|-------|------|------|
-| `orchestrator` | primary | `github-copilot/claude-opus-4-6` | 0.1 | Central coordinator; analyzes intent, plans, delegates, verifies |
-| `explore` | subagent | `github-copilot/gpt-5-mini` | 0.0 | Read-only analyst; discovers architecture, traces dependencies, identifies conventions |
-| `implementer` | subagent | `github-copilot/claude-sonnet-4-6` | 0.2 | Code executor; writes/edits code, runs builds/tests, reports outcomes |
-| `reviewer` | subagent | `github-copilot/claude-opus-4-6` | 0.1 | Quality gate; validates correctness, consistency, maintainability, safety |
-| `doc-writer` | subagent | `github-copilot/gpt-5-mini` | 0.2 | Documentation maintainer; updates changelogs, READMEs, and docs only |
-| `websearch` | subagent | `github-copilot/claude-haiku-4-5` | 0.1 | Technical research analyst; framework comparisons, OSS discovery, API research |
+| `architect` | primary | `github-copilot/claude-opus-4.6` | 0.1 | Planning + grilling; produces confirmed implementation plans |
+| `conductor` | primary | `github-copilot/claude-sonnet-4.6` | 0.1 | Execution coordinator; delegates, escalates, verifies, reports |
+| `scout` | subagent | `github-copilot/gpt-5-mini` | 0.0 | Read-only analyst; discovers architecture, traces dependencies, identifies conventions |
+| `builder` | subagent | `github-copilot/claude-sonnet-4.6` | 0.2 | Code + docs executor; writes/edits code and directly affected docs, runs builds/tests |
+| `auditor` | subagent | `github-copilot/claude-opus-4.6` | 0.1 | Quality gate; validates correctness, consistency, maintainability, safety |
+| `researcher` | subagent | `github-copilot/claude-haiku-4.5` | 0.1 | Technical research analyst; framework comparisons, OSS discovery, API research |
 
 ### Agent Routing
 
@@ -73,32 +81,31 @@ The `description` field in each agent's frontmatter is what OpenCode uses to rou
 
 | If you want to… | Use this agent |
 |-----------------|---------------|
-| Update README, CHANGELOG, or any `.md` file | `@doc-writer` |
-| Write or edit source code (`.kt`, `.swift`, `.ts`, etc.) | `@implementer` |
-| Explore the codebase, find files, trace dependencies | `@explore` |
-| Research libraries, APIs, or external tools | `@websearch` |
-| Review code for correctness and safety | `@reviewer` |
-
-> **Tip:** Use explicit trigger phrases for `@doc-writer`: *"update readme"*, *"write changelog"*, *"document this"*, *"update docs"*. Without these, the router may default to `@implementer` for any file-modification task.
+| Plan a feature, refactor, or non-trivial task | `@architect` |
+| Execute a confirmed plan | `@conductor` |
+| Write or edit source code (`.kt`, `.swift`, `.ts`, etc.) | `@builder` |
+| Explore the codebase, find files, trace dependencies | `@scout` |
+| Research libraries, APIs, or external tools | `@researcher` |
+| Audit code for correctness and safety | `@auditor` |
 
 ### Agent Responsibilities
 
-#### 🎯 Orchestrator
-The only primary agent. Owns the full 7-phase workflow. Has **no edit permissions** — it cannot write code, only plan and delegate.
+#### 🏛️ Architect
+Primary planning agent. Conducts grill-me style interviews, explores the codebase via `@scout`, and produces a confirmed implementation plan. Has **no edit permissions** — job ends at plan confirmation.
 
-#### 🔍 Explore
-Read-only codebase analyst. Discovers architecture, traces call graphs, identifies conventions and patterns. **Temperature 0.0** for maximum determinism.
+#### 🎼 Conductor
+Primary execution coordinator. Reads the confirmed plan, delegates to `@builder`, manages escalation via `@scout`/`@researcher`, and routes all completed work through `@auditor`. Has **no edit permissions**.
 
-#### 🔨 Implementer
-Executes implementation plans precisely. Has edit + guarded bash permissions. Follows orchestrator plans — does not make architecture decisions.
+#### 🔍 Scout
+Read-only codebase analyst. Discovers architecture, traces call graphs, identifies conventions and patterns. **Temperature 0.0** for maximum determinism. Owns phases 1–2 of the diagnose debug loop.
 
-#### 🔬 Reviewer
-Quality gate using the most capable model (Opus). Read-only — cannot fix issues directly, only approve or reject with structured feedback. Catches bugs, security issues, and architectural drift.
+#### 🔨 Builder
+Executes implementation plans precisely. Has edit + guarded bash permissions. Follows conductor plans — does not make architecture decisions. Owns docs for files directly affected by the current implementation. Owns phases 3–5 of the diagnose debug loop.
 
-#### 📝 Doc-Writer
-Restricted to documentation files only. Activated only after reviewer approval. Cannot touch source code.
+#### 🔬 Auditor
+Quality gate using the most capable model (Opus). Read-only — cannot fix issues directly. Returns APPROVE, REJECT, or CLARIFICATION_NEEDED with structured feedback. Catches bugs, security issues, and architectural drift.
 
-#### 🌐 Websearch
+#### 🌐 Researcher
 Web-fetch only, no local file access. Used for framework comparisons, API version checks, OSS discovery, and deprecation validation.
 
 ## Skills
@@ -114,51 +121,64 @@ Web-fetch only, no local file access. Used for framework comparisons, API versio
 
 ## Workflow
 
-The orchestrator follows a strict **7-phase execution model**:
+The system follows a **two-stage execution model**: plan first, then execute.
 
+### Stage 1: Planning (Architect)
 ```
-Phase 1: Analysis      → Parse intent, identify ambiguities, estimate complexity
-Phase 2: Exploration   → @explore (codebase) and/or @websearch (external)
-Phase 3: Planning      → Synthesize findings into explicit implementation plan
-Phase 4: Implementation→ @implementer with full plan + context + validation commands
-Phase 5: Review        → @reviewer sees ALL changes before anything is marked done
-Phase 6: Documentation → @doc-writer only after reviewer approval
-Phase 7: Reporting     → Summarize changes, caveats, follow-up items
+Phase 1: Scout exploration  → @scout gathers codebase context
+Phase 2: Grilling session   → Architect challenges requirements one question at a time
+Phase 3: Plan synthesis     → Confirmed plan output in ---CONFIRMED EXECUTION PLAN--- block
 ```
+
+### Stage 2: Execution (Conductor)
+```
+Phase 1: Plan intake        → Parse confirmed plan, create todos
+Phase 2: Implementation     → @builder with full plan + context + validation commands
+Phase 3: Escalation         → @scout (local) or @researcher (external) if builder blocked
+Phase 4: Audit              → @auditor sees ALL changes before anything is marked done
+Phase 5: Reporting          → Summarize changes, caveats, follow-up items
+```
+
+### Retry Strategy (Standardized 3-Attempt Model)
+1. Attempt 1 — normal delegation
+2. Attempt 2 — local diagnosis fix (builder self-diagnoses with `diagnose` skill)
+3. Escalate via `@scout` (local) or `@researcher` (external)
+4. Attempt 3 — retry with new evidence
+5. Still failing → escalate to user
 
 ### Parallel Delegation Rules
-- ✅ Explore + Websearch can run in parallel (independent, no shared state)
+- ✅ Scout + Researcher can run in parallel (independent, no shared state)
 - ✅ Independent implementation subtasks can run in parallel (no file overlap)
-- ❌ Review is always sequential (must see all changes holistically)
-- ❌ Doc-writer never runs in parallel with reviewer
+- ❌ Audit is always sequential (must see all changes holistically)
 
 ## Permission Matrix
 
 | Agent | Read | Edit | Bash | Delegate | Web | Skills |
 |-------|------|------|------|----------|-----|--------|
-| Orchestrator | ✅ | ❌ | ❌ (git read-only) | ✅ | ❌ | All |
-| Explore | ✅ | ❌ | ❌ (git/grep only) | ❌ | ❌ | graphify, zoom-out, diagnose |
-| Implementer | ✅ | ✅ | ✅ (guarded) | ❌ | ✅ | — |
-| Reviewer | ✅ | ❌ | ❌ (git/grep only) | ❌ | ❌ | zoom-out, graphify |
-| Doc-Writer | ✅ (docs only) | ✅ (docs only) | ❌ (git/grep only) | ❌ | ❌ | — |
-| Websearch | ❌ | ❌ | ❌ | ❌ | ✅ | — |
+| Architect | ✅ | ❌ | ❌ (git read-only) | scout, researcher | ❌ | All |
+| Conductor | ✅ | ❌ | ❌ (git read-only) | scout, builder, auditor, researcher | ❌ | All |
+| Scout | ✅ | ❌ | ❌ (git/grep only) | ❌ | ❌ | graphify, zoom-out, diagnose |
+| Builder | ✅ | ✅ (all) | ✅ (guarded) | ❌ | ❌ | diagnose |
+| Auditor | ✅ | ❌ | ❌ (git/grep/audit only) | ❌ | ❌ | zoom-out, graphify |
+| Researcher | ❌ | ❌ | ❌ | ❌ | ✅ | — |
 
-> **Notes:** Bash permissions are restricted per agent — Orchestrator allows only read-only git commands (`status`, `diff`, `log`, `branch`); git write operations (`add`, `commit`, `push`) are exclusively the Implementer's job, and only after Reviewer approval. Explore, Reviewer, and Doc-Writer allow only `git`, `grep`, and `find`. Implementer has guarded bash (destructive operations require confirmation) and web-fetch access. Doc-Writer has no bash access except git log/diff — it uses native Read/Glob/Grep for discovery and Write/Edit tools for file modification, preventing token-wasting bash fallback failures.
+> **Notes:** Bash permissions are restricted per agent — Architect and Conductor allow only read-only git commands (`status`, `diff`, `log`, `branch`). Git write operations (`add`, `commit`, `push`) are exclusively the Builder's job, and only after Auditor approval. Scout and Auditor allow only `git`, `grep`, and `find`. Builder has guarded bash (destructive operations require confirmation). Researcher has web-fetch only access.
 
 ## Design Decisions
 
 | Decision | Rationale |
 |----------|-----------|
-| Explore separated from implementer | Forces "read before write" discipline; prevents hallucinated implementations |
-| Reviewer is read-only | Prevents "fixing" issues directly; ensures structured, actionable feedback |
-| Doc-writer restricted to docs files | Prevents accidental source code modification during documentation passes |
-| Orchestrator has no edit permissions | Prevents bypassing the delegation workflow; enforces separation of concerns |
-| Temperature 0.0 for explore | Maximizes determinism and reproducibility in codebase analysis |
-| Max 2 retry cycles | Prevents infinite loops; escalates to user after repeated failures |
-| Reviewer uses Opus (most capable model) | Quality gate deserves the highest-capability model; catches subtle bugs |
-| Orchestrator has no git write access | Git commits/pushes are implementer's job — only after reviewer approval; giving orchestrator commit access would bypass the review gate |
-| Doc-writer uses Write tool (not bash) for large files | Native Write tool is safer than bash redirection; bash has no safety checks and can corrupt files |
-| Doc-writer uses GPT-5 mini (free) | Zero cost for documentation tasks; GPT-5 mini writes clean prose and follows structured instructions reliably |
+| Architect separated from Conductor | Planning and execution are different cognitive modes; separation prevents premature implementation drift |
+| Confirmed plan block required | Strict `---CONFIRMED EXECUTION PLAN---` delimiter prevents free-text parsing ambiguity |
+| Scout separated from builder | Forces "read before write" discipline; prevents hallucinated implementations |
+| Auditor is read-only | Prevents "fixing" issues directly; ensures structured, actionable feedback |
+| Auditor has CLARIFICATION_NEEDED verdict | Allows audit to pause for more context rather than forcing a wrong APPROVE/REJECT |
+| Builder owns directly affected docs | Avoids a separate doc-writer round-trip for docs that are obviously part of the change |
+| Conductor has no edit permissions | Prevents bypassing the delegation workflow; enforces separation of concerns |
+| Temperature 0.0 for scout | Maximizes determinism and reproducibility in codebase analysis |
+| Standardized 3-attempt retry | Prevents infinite loops; escalates with new evidence at each stage before giving up |
+| Auditor uses Opus (most capable model) | Quality gate deserves the highest-capability model; catches subtle bugs |
+| Conductor has no git write access | Git commits/pushes are builder's job — only after auditor approval |
 
 ## Benchmark Results
 
@@ -167,7 +187,7 @@ Validated on a real iOS project (FoodNutritions):
 | Task Complexity | Single Agent | Multi-Agent | Winner | Notes |
 |----------------|-------------|-------------|--------|-------|
 | Simple (read-only) | Fast, accurate | Adds overhead | Single agent | No delegation needed for trivial tasks |
-| Medium (1-file impl) | Missed 1 bug | Caught all bugs | **Multi-agent** | +1 critical bug caught by reviewer |
+| Medium (1-file impl) | Missed 1 bug | Caught all bugs | **Multi-agent** | +1 critical bug caught by auditor |
 | Complex (multi-file) | Missed 3 bugs | Caught all bugs | **Multi-agent** | +3 blocking bugs caught |
 
 **ROI**: ~3K tokens of orchestration overhead pays for itself on medium+ complexity tasks.
@@ -177,14 +197,12 @@ Test suite: 12 benchmark cases (T01–T12) defined in `AGENT_BENCHMARK.md` cover
 - Skill trigger accuracy
 - Permission boundary enforcement
 - Rejection cycle handling
-- Doc-writer activation conditions
 
 ## Getting Started
 
 ### Prerequisites
 - [OpenCode](https://opencode.ai) installed
 - GitHub Copilot or Anthropic API access (for Claude models)
-- Node.js (for zod validation plugin)
 
 ### Installation
 
@@ -196,17 +214,12 @@ cp -r opencode-subagents/.opencode .
 cp opencode-subagents/opencode.json .
 ```
 
-2. Install dependencies:
-```bash
-cd .opencode && npm install
-```
-
-3. Start OpenCode:
+2. Start OpenCode:
 ```bash
 opencode
 ```
 
-The orchestrator agent will be your primary entry point. All other agents are invoked automatically as subagents.
+The architect agent will be your primary entry point for planning. Switch to conductor to execute confirmed plans. All other agents are invoked automatically as subagents.
 
 ### Configuration
 
@@ -214,7 +227,8 @@ Edit `opencode.json` to set your preferred default model:
 ```json
 {
   "$schema": "https://opencode.ai/config.json",
-  "model": "github-copilot/claude-sonnet-4-6"
+  "model": "github-copilot/claude-sonnet-4.6",
+  "default_agent": "architect"
 }
 ```
 
@@ -224,12 +238,12 @@ Agent models are configured individually in `.opencode/agents/*.md` frontmatter.
 
 ### ✅ Implemented
 - [x] 6 agents with full definitions and permission isolation
-  - Orchestrator (primary coordinator)
-  - Explore (read-only analyst)
-  - Implementer (code executor)
-  - Reviewer (quality gate, Opus model)
-  - Doc-Writer (docs-only maintainer)
-  - Websearch (external research)
+  - Architect (planning + grilling)
+  - Conductor (execution coordinator)
+  - Scout (read-only analyst)
+  - Builder (code + directly affected docs executor)
+  - Auditor (quality gate, Opus model, CLARIFICATION_NEEDED verdict)
+  - Researcher (external research)
 - [x] 6 specialized skills
   - `diagnose` — 5-phase debug loop
   - `zoom-out` — architectural context mapping
@@ -238,21 +252,14 @@ Agent models are configured individually in `.opencode/agents/*.md` frontmatter.
   - `handoff` — session continuity
   - `grill-with-docs` — interactive planning
 - [x] Strict permission matrix enforced per agent
-- [x] 7-phase orchestration workflow
+- [x] Two-stage workflow: planning (architect) + execution (conductor)
+- [x] Confirmed plan block format (`---CONFIRMED EXECUTION PLAN---`)
 - [x] Parallel delegation rules defined
-- [x] Max 2 retry / escalation strategy
+- [x] Standardized 3-attempt retry model across all agents
+- [x] Auditor CLARIFICATION_NEEDED verdict for uncertain analysis
+- [x] Builder owns directly affected documentation
 - [x] Benchmark suite (12 test cases T01–T12)
 - [x] Empirical validation on real iOS project
-- [x] Architecture documentation (`SYSTEM-OVERVIEW.md`)
-- [x] Original requirements captured (`Goal.md`)
-- [x] Agent routing fix — doc-writer trigger keywords added, implementer scoped to source code only
-- [x] Permission matrix corrected — Skills column added, Implementer web permission fixed
-- [x] Full model IDs documented with `github-copilot/` prefix
-- [x] Orchestrator git commit timing gate — commits only delegated to implementer after reviewer approval
-- [x] Doc-writer large file strategy — Write tool (full rewrite) preferred over Edit tool for files >100 lines
-- [x] Agent models optimized for cost — free models (GPT-5 mini) for explore/doc-writer, cheap (Haiku 4-5) for websearch, capable (Sonnet/Opus) for implementation/review
-- [x] Doc-writer bash permissions stripped (grep/rg/find removed) — forces native tool usage
-- [x] Orchestrator anti-pattern: content generation before delegation explicitly prevented
 
 ### 🔲 Planned
 - [ ] Additional skills: `test-writer`, `migration-helper`, `security-audit`

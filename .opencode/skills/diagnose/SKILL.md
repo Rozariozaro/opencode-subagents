@@ -19,7 +19,7 @@ Do NOT invoke this skill for:
 
 ## THE 5-PHASE DEBUG LOOP
 
-### Phase 1 — Reproduce (owned by @explore)
+### Phase 1 — Reproduce (owned by @scout)
 
 **Goal**: Build a fast, deterministic feedback loop.
 
@@ -39,7 +39,7 @@ Do NOT invoke this skill for:
 
 ---
 
-### Phase 2 — Minimise (owned by @explore)
+### Phase 2 — Minimise (owned by @scout)
 
 **Goal**: Strip away everything that isn't the bug.
 
@@ -60,7 +60,7 @@ Do NOT invoke this skill for:
 
 ---
 
-### Phase 3 — Hypothesise (owned by @implementer)
+### Phase 3 — Hypothesise (owned by @builder)
 
 **Goal**: Form one falsifiable hypothesis at a time.
 
@@ -80,7 +80,7 @@ Do NOT invoke this skill for:
 
 ---
 
-### Phase 4 — Instrument (owned by @implementer)
+### Phase 4 — Instrument (owned by @builder)
 
 **Goal**: Add the minimal instrumentation needed to confirm or refute the hypothesis.
 
@@ -100,7 +100,7 @@ Do NOT invoke this skill for:
 
 ---
 
-### Phase 5 — Fix + Regression Test (owned by @implementer)
+### Phase 5 — Fix + Regression Test (owned by @builder)
 
 **Goal**: Fix the root cause and prevent recurrence.
 
@@ -117,7 +117,7 @@ Do NOT invoke this skill for:
 - Fix the root cause, not the symptom
 - Do not add defensive code that hides the bug without fixing it (e.g., `if err != nil { return }` without understanding why err is non-nil)
 - The regression test must fail on the unfixed code and pass on the fixed code
-- If the fix requires a breaking change, report it to the orchestrator before committing
+- If the fix requires a breaking change, report it to the conductor before committing
 
 **Exit criteria**: Bug fixed, full test suite passing, regression test written and passing.
 
