@@ -1,0 +1,1528 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "PocketBase Food & Recipes API",
+    "description": "Auto-generated API overview for the PocketBase instance at the local NUC server. Covers the packaged_foods, recipes, and food_logs collections.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://192.168.0.15:8090",
+      "description": "LAN direct (NUC)"
+    },
+    {
+      "url": "https://pocketbase.rapheal.in",
+      "description": "Cloudflare tunnel (public)"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Authenticate via POST /api/collections/_superusers/auth-with-password to get a token."
+      }
+    },
+    "schemas": {
+      "PackagedFoods": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "code_or_barcode": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "brand": {
+            "type": "string"
+          },
+          "calories": {
+            "type": "number"
+          },
+          "carbs": {
+            "type": "number"
+          },
+          "protein": {
+            "type": "number"
+          },
+          "fat": {
+            "type": "number"
+          },
+          "fiber": {
+            "type": "number"
+          },
+          "calcium_mg": {
+            "type": "number"
+          },
+          "iron_mg": {
+            "type": "number"
+          },
+          "sodium_mg": {
+            "type": "number"
+          },
+          "source": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ]
+      },
+      "PackagedFoodsCreate": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "code_or_barcode": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "brand": {
+            "type": "string"
+          },
+          "calories": {
+            "type": "number"
+          },
+          "carbs": {
+            "type": "number"
+          },
+          "protein": {
+            "type": "number"
+          },
+          "fat": {
+            "type": "number"
+          },
+          "fiber": {
+            "type": "number"
+          },
+          "calcium_mg": {
+            "type": "number"
+          },
+          "iron_mg": {
+            "type": "number"
+          },
+          "sodium_mg": {
+            "type": "number"
+          },
+          "source": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "PackagedFoodsList": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer"
+          },
+          "perPage": {
+            "type": "integer"
+          },
+          "totalItems": {
+            "type": "integer"
+          },
+          "totalPages": {
+            "type": "integer"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PackagedFoods"
+            }
+          }
+        }
+      },
+      "Recipes": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string"
+          },
+          "food_code": {
+            "type": "string"
+          },
+          "ingredients": {
+            "type": "string"
+          },
+          "serving_size": {
+            "type": "string"
+          },
+          "calories": {
+            "type": "number"
+          },
+          "protein": {
+            "type": "number"
+          },
+          "fat": {
+            "type": "number"
+          },
+          "carbs": {
+            "type": "number"
+          },
+          "fiber": {
+            "type": "number"
+          },
+          "sugar": {
+            "type": "number"
+          },
+          "saturated_fat": {
+            "type": "number"
+          },
+          "cholesterol_mg": {
+            "type": "number"
+          },
+          "sodium_mg": {
+            "type": "number"
+          },
+          "energy_kj": {
+            "type": "number"
+          },
+          "freesugar_g": {
+            "type": "number"
+          },
+          "sfa_mg": {
+            "type": "number"
+          },
+          "mufa_mg": {
+            "type": "number"
+          },
+          "pufa_mg": {
+            "type": "number"
+          },
+          "calcium_mg": {
+            "type": "number"
+          },
+          "phosphorus_mg": {
+            "type": "number"
+          },
+          "magnesium_mg": {
+            "type": "number"
+          },
+          "potassium_mg": {
+            "type": "number"
+          },
+          "iron_mg": {
+            "type": "number"
+          },
+          "copper_mg": {
+            "type": "number"
+          },
+          "selenium_ug": {
+            "type": "number"
+          },
+          "chromium_mg": {
+            "type": "number"
+          },
+          "manganese_mg": {
+            "type": "number"
+          },
+          "molybdenum_mg": {
+            "type": "number"
+          },
+          "zinc_mg": {
+            "type": "number"
+          },
+          "vita_ug": {
+            "type": "number"
+          },
+          "vite_mg": {
+            "type": "number"
+          },
+          "vitd2_ug": {
+            "type": "number"
+          },
+          "vitd3_ug": {
+            "type": "number"
+          },
+          "vitk1_ug": {
+            "type": "number"
+          },
+          "vitk2_ug": {
+            "type": "number"
+          },
+          "folate_ug": {
+            "type": "number"
+          },
+          "vitb1_mg": {
+            "type": "number"
+          },
+          "vitb2_mg": {
+            "type": "number"
+          },
+          "vitb3_mg": {
+            "type": "number"
+          },
+          "vitb5_mg": {
+            "type": "number"
+          },
+          "vitb6_mg": {
+            "type": "number"
+          },
+          "vitb7_ug": {
+            "type": "number"
+          },
+          "vitb9_ug": {
+            "type": "number"
+          },
+          "vitc_mg": {
+            "type": "number"
+          },
+          "carotenoids_ug": {
+            "type": "number"
+          },
+          "servings_unit": {
+            "type": "string"
+          },
+          "unit_serving_energy_kj": {
+            "type": "number"
+          },
+          "unit_serving_energy_kcal": {
+            "type": "number"
+          },
+          "unit_serving_carb_g": {
+            "type": "number"
+          },
+          "unit_serving_protein_g": {
+            "type": "number"
+          },
+          "unit_serving_fat_g": {
+            "type": "number"
+          },
+          "unit_serving_freesugar_g": {
+            "type": "number"
+          },
+          "unit_serving_fibre_g": {
+            "type": "number"
+          },
+          "unit_serving_sfa_mg": {
+            "type": "number"
+          },
+          "unit_serving_mufa_mg": {
+            "type": "number"
+          },
+          "unit_serving_pufa_mg": {
+            "type": "number"
+          },
+          "unit_serving_cholesterol_mg": {
+            "type": "number"
+          },
+          "unit_serving_calcium_mg": {
+            "type": "number"
+          },
+          "unit_serving_phosphorus_mg": {
+            "type": "number"
+          },
+          "unit_serving_magnesium_mg": {
+            "type": "number"
+          },
+          "unit_serving_sodium_mg": {
+            "type": "number"
+          },
+          "unit_serving_potassium_mg": {
+            "type": "number"
+          },
+          "unit_serving_iron_mg": {
+            "type": "number"
+          },
+          "unit_serving_copper_mg": {
+            "type": "number"
+          },
+          "unit_serving_selenium_ug": {
+            "type": "number"
+          },
+          "unit_serving_chromium_mg": {
+            "type": "number"
+          },
+          "unit_serving_manganese_mg": {
+            "type": "number"
+          },
+          "unit_serving_molybdenum_mg": {
+            "type": "number"
+          },
+          "unit_serving_zinc_mg": {
+            "type": "number"
+          },
+          "unit_serving_vita_ug": {
+            "type": "number"
+          },
+          "unit_serving_vite_mg": {
+            "type": "number"
+          },
+          "unit_serving_vitd2_ug": {
+            "type": "number"
+          },
+          "unit_serving_vitd3_ug": {
+            "type": "number"
+          },
+          "unit_serving_vitk1_ug": {
+            "type": "number"
+          },
+          "unit_serving_vitk2_ug": {
+            "type": "number"
+          },
+          "unit_serving_folate_ug": {
+            "type": "number"
+          },
+          "unit_serving_vitb1_mg": {
+            "type": "number"
+          },
+          "unit_serving_vitb2_mg": {
+            "type": "number"
+          },
+          "unit_serving_vitb3_mg": {
+            "type": "number"
+          },
+          "unit_serving_vitb5_mg": {
+            "type": "number"
+          },
+          "unit_serving_vitb6_mg": {
+            "type": "number"
+          },
+          "unit_serving_vitb7_ug": {
+            "type": "number"
+          },
+          "unit_serving_vitb9_ug": {
+            "type": "number"
+          },
+          "unit_serving_vitc_mg": {
+            "type": "number"
+          },
+          "unit_serving_carotenoids_ug": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ]
+      },
+      "RecipesCreate": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string"
+          },
+          "food_code": {
+            "type": "string"
+          },
+          "ingredients": {
+            "type": "string"
+          },
+          "serving_size": {
+            "type": "string"
+          },
+          "calories": {
+            "type": "number"
+          },
+          "protein": {
+            "type": "number"
+          },
+          "fat": {
+            "type": "number"
+          },
+          "carbs": {
+            "type": "number"
+          },
+          "fiber": {
+            "type": "number"
+          },
+          "sugar": {
+            "type": "number"
+          },
+          "saturated_fat": {
+            "type": "number"
+          },
+          "cholesterol_mg": {
+            "type": "number"
+          },
+          "sodium_mg": {
+            "type": "number"
+          },
+          "energy_kj": {
+            "type": "number"
+          },
+          "freesugar_g": {
+            "type": "number"
+          },
+          "sfa_mg": {
+            "type": "number"
+          },
+          "mufa_mg": {
+            "type": "number"
+          },
+          "pufa_mg": {
+            "type": "number"
+          },
+          "calcium_mg": {
+            "type": "number"
+          },
+          "phosphorus_mg": {
+            "type": "number"
+          },
+          "magnesium_mg": {
+            "type": "number"
+          },
+          "potassium_mg": {
+            "type": "number"
+          },
+          "iron_mg": {
+            "type": "number"
+          },
+          "copper_mg": {
+            "type": "number"
+          },
+          "selenium_ug": {
+            "type": "number"
+          },
+          "chromium_mg": {
+            "type": "number"
+          },
+          "manganese_mg": {
+            "type": "number"
+          },
+          "molybdenum_mg": {
+            "type": "number"
+          },
+          "zinc_mg": {
+            "type": "number"
+          },
+          "vita_ug": {
+            "type": "number"
+          },
+          "vite_mg": {
+            "type": "number"
+          },
+          "vitd2_ug": {
+            "type": "number"
+          },
+          "vitd3_ug": {
+            "type": "number"
+          },
+          "vitk1_ug": {
+            "type": "number"
+          },
+          "vitk2_ug": {
+            "type": "number"
+          },
+          "folate_ug": {
+            "type": "number"
+          },
+          "vitb1_mg": {
+            "type": "number"
+          },
+          "vitb2_mg": {
+            "type": "number"
+          },
+          "vitb3_mg": {
+            "type": "number"
+          },
+          "vitb5_mg": {
+            "type": "number"
+          },
+          "vitb6_mg": {
+            "type": "number"
+          },
+          "vitb7_ug": {
+            "type": "number"
+          },
+          "vitb9_ug": {
+            "type": "number"
+          },
+          "vitc_mg": {
+            "type": "number"
+          },
+          "carotenoids_ug": {
+            "type": "number"
+          },
+          "servings_unit": {
+            "type": "string"
+          },
+          "unit_serving_energy_kj": {
+            "type": "number"
+          },
+          "unit_serving_energy_kcal": {
+            "type": "number"
+          },
+          "unit_serving_carb_g": {
+            "type": "number"
+          },
+          "unit_serving_protein_g": {
+            "type": "number"
+          },
+          "unit_serving_fat_g": {
+            "type": "number"
+          },
+          "unit_serving_freesugar_g": {
+            "type": "number"
+          },
+          "unit_serving_fibre_g": {
+            "type": "number"
+          },
+          "unit_serving_sfa_mg": {
+            "type": "number"
+          },
+          "unit_serving_mufa_mg": {
+            "type": "number"
+          },
+          "unit_serving_pufa_mg": {
+            "type": "number"
+          },
+          "unit_serving_cholesterol_mg": {
+            "type": "number"
+          },
+          "unit_serving_calcium_mg": {
+            "type": "number"
+          },
+          "unit_serving_phosphorus_mg": {
+            "type": "number"
+          },
+          "unit_serving_magnesium_mg": {
+            "type": "number"
+          },
+          "unit_serving_sodium_mg": {
+            "type": "number"
+          },
+          "unit_serving_potassium_mg": {
+            "type": "number"
+          },
+          "unit_serving_iron_mg": {
+            "type": "number"
+          },
+          "unit_serving_copper_mg": {
+            "type": "number"
+          },
+          "unit_serving_selenium_ug": {
+            "type": "number"
+          },
+          "unit_serving_chromium_mg": {
+            "type": "number"
+          },
+          "unit_serving_manganese_mg": {
+            "type": "number"
+          },
+          "unit_serving_molybdenum_mg": {
+            "type": "number"
+          },
+          "unit_serving_zinc_mg": {
+            "type": "number"
+          },
+          "unit_serving_vita_ug": {
+            "type": "number"
+          },
+          "unit_serving_vite_mg": {
+            "type": "number"
+          },
+          "unit_serving_vitd2_ug": {
+            "type": "number"
+          },
+          "unit_serving_vitd3_ug": {
+            "type": "number"
+          },
+          "unit_serving_vitk1_ug": {
+            "type": "number"
+          },
+          "unit_serving_vitk2_ug": {
+            "type": "number"
+          },
+          "unit_serving_folate_ug": {
+            "type": "number"
+          },
+          "unit_serving_vitb1_mg": {
+            "type": "number"
+          },
+          "unit_serving_vitb2_mg": {
+            "type": "number"
+          },
+          "unit_serving_vitb3_mg": {
+            "type": "number"
+          },
+          "unit_serving_vitb5_mg": {
+            "type": "number"
+          },
+          "unit_serving_vitb6_mg": {
+            "type": "number"
+          },
+          "unit_serving_vitb7_ug": {
+            "type": "number"
+          },
+          "unit_serving_vitb9_ug": {
+            "type": "number"
+          },
+          "unit_serving_vitc_mg": {
+            "type": "number"
+          },
+          "unit_serving_carotenoids_ug": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "RecipesList": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer"
+          },
+          "perPage": {
+            "type": "integer"
+          },
+          "totalItems": {
+            "type": "integer"
+          },
+          "totalPages": {
+            "type": "integer"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Recipes"
+            }
+          }
+        }
+      },
+      "FoodLogs": {
+        "type": "object",
+        "description": "A single food log entry. Row-level security: users can only access their own logs.",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "user": {
+            "type": "string",
+            "description": "Relation ID to the users auth collection"
+          },
+          "date": {
+            "type": "string",
+            "format": "date",
+            "description": "Log date (indexed)"
+          },
+          "meal_type": {
+            "type": "string",
+            "enum": ["breakfast", "lunch", "dinner", "snack"]
+          },
+          "food_type": {
+            "type": "string",
+            "enum": ["recipe", "packaged_food"]
+          },
+          "food_id": {
+            "type": "string",
+            "description": "Reference ID to the recipe or packaged_food record"
+          },
+          "food_name": {
+            "type": "string",
+            "description": "Denormalized food name for display"
+          },
+          "quantity": {
+            "type": "number",
+            "description": "Number of servings"
+          },
+          "calories": {
+            "type": "number"
+          },
+          "protein": {
+            "type": "number"
+          },
+          "carbs": {
+            "type": "number"
+          },
+          "fat": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "id",
+          "user",
+          "date",
+          "meal_type",
+          "food_type",
+          "food_name",
+          "quantity",
+          "calories"
+        ]
+      },
+      "FoodLogsCreate": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "type": "string",
+            "description": "Relation ID to the users auth collection"
+          },
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "meal_type": {
+            "type": "string",
+            "enum": ["breakfast", "lunch", "dinner", "snack"]
+          },
+          "food_type": {
+            "type": "string",
+            "enum": ["recipe", "packaged_food"]
+          },
+          "food_id": {
+            "type": "string"
+          },
+          "food_name": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "calories": {
+            "type": "number"
+          },
+          "protein": {
+            "type": "number"
+          },
+          "carbs": {
+            "type": "number"
+          },
+          "fat": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "user",
+          "date",
+          "meal_type",
+          "food_type",
+          "food_name",
+          "quantity",
+          "calories"
+        ]
+      },
+      "FoodLogsList": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer"
+          },
+          "perPage": {
+            "type": "integer"
+          },
+          "totalItems": {
+            "type": "integer"
+          },
+          "totalPages": {
+            "type": "integer"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FoodLogs"
+            }
+          }
+        }
+      }
+    },
+    "parameters": {
+      "page": {
+        "name": "page",
+        "in": "query",
+        "schema": {
+          "type": "integer",
+          "default": 1
+        },
+        "description": "Page number"
+      },
+      "perPage": {
+        "name": "perPage",
+        "in": "query",
+        "schema": {
+          "type": "integer",
+          "default": 30,
+          "maximum": 500
+        },
+        "description": "Records per page (max 500)"
+      },
+      "sort": {
+        "name": "sort",
+        "in": "query",
+        "schema": {
+          "type": "string"
+        },
+        "description": "Sort field(s). Prefix with - for DESC. E.g. -created,name"
+      },
+      "filter": {
+        "name": "filter",
+        "in": "query",
+        "schema": {
+          "type": "string"
+        },
+        "description": "PocketBase filter expression. E.g. (name~'chicken' && calories>200)"
+      },
+      "fields": {
+        "name": "fields",
+        "in": "query",
+        "schema": {
+          "type": "string"
+        },
+        "description": "Comma-separated list of fields to return. E.g. name,calories,protein"
+      }
+    }
+  },
+  "paths": {
+    "/api/collections/_superusers/auth-with-password": {
+      "post": {
+        "summary": "Authenticate as superuser",
+        "tags": [
+          "Auth"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "identity",
+                  "password"
+                ],
+                "properties": {
+                  "identity": {
+                    "type": "string",
+                    "example": "admin@rapheal.in"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Auth token + admin record",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string"
+                    },
+                    "record": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/collections/packaged_foods/records": {
+      "get": {
+        "summary": "List packaged_foods records (5,317 total)",
+        "tags": [
+          "PackagedFoods"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/perPage"
+          },
+          {
+            "$ref": "#/components/parameters/sort"
+          },
+          {
+            "$ref": "#/components/parameters/filter"
+          },
+          {
+            "$ref": "#/components/parameters/fields"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated list of packaged_foods",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PackagedFoodsList"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a packaged_foods record",
+        "tags": [
+          "PackagedFoods"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PackagedFoodsCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Created record",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PackagedFoods"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/collections/packaged_foods/records/{id}": {
+      "get": {
+        "summary": "Get a single packaged_foods record",
+        "tags": [
+          "PackagedFoods"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Record ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Single record",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PackagedFoods"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Record not found"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update a packaged_foods record",
+        "tags": [
+          "PackagedFoods"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Record ID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PackagedFoodsCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated record",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PackagedFoods"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a packaged_foods record",
+        "tags": [
+          "PackagedFoods"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Record ID"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Record deleted"
+          },
+          "404": {
+            "description": "Record not found"
+          }
+        }
+      }
+    },
+    "/api/collections/recipes/records": {
+      "get": {
+        "summary": "List recipes records (9,510 total)",
+        "tags": [
+          "Recipes"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/perPage"
+          },
+          {
+            "$ref": "#/components/parameters/sort"
+          },
+          {
+            "$ref": "#/components/parameters/filter"
+          },
+          {
+            "$ref": "#/components/parameters/fields"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated list of recipes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecipesList"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a recipes record",
+        "tags": [
+          "Recipes"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecipesCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Created record",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Recipes"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/collections/recipes/records/{id}": {
+      "get": {
+        "summary": "Get a single recipes record",
+        "tags": [
+          "Recipes"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Record ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Single record",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Recipes"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Record not found"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update a recipes record",
+        "tags": [
+          "Recipes"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Record ID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecipesCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated record",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Recipes"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a recipes record",
+        "tags": [
+          "Recipes"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Record ID"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Record deleted"
+          },
+          "404": {
+            "description": "Record not found"
+          }
+        }
+      }
+    },
+    "/api/collections/food_logs/records": {
+      "get": {
+        "summary": "List food_logs records (user-scoped)",
+        "description": "Returns paginated food logs. Row-level security: only returns logs belonging to the authenticated user. Typical filter: (date='2025-01-15')",
+        "tags": [
+          "FoodLogs"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/perPage"
+          },
+          {
+            "$ref": "#/components/parameters/sort"
+          },
+          {
+            "$ref": "#/components/parameters/filter"
+          },
+          {
+            "$ref": "#/components/parameters/fields"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated list of food_logs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FoodLogsList"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized (missing or invalid auth token)"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a food_logs record",
+        "description": "Log a meal entry. Requires authentication. The 'user' field must match the authenticated user's ID.",
+        "tags": [
+          "FoodLogs"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FoodLogsCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Created record",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FoodLogs"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error (missing required fields)"
+          },
+          "403": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/collections/food_logs/records/{id}": {
+      "get": {
+        "summary": "Get a single food_logs record",
+        "tags": [
+          "FoodLogs"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Record ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Single record",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FoodLogs"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized (not the record owner)"
+          },
+          "404": {
+            "description": "Record not found"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update a food_logs record",
+        "description": "Only the record owner can update their own log entry.",
+        "tags": [
+          "FoodLogs"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Record ID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FoodLogsCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated record",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FoodLogs"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized (not the record owner)"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a food_logs record",
+        "description": "Only the record owner can delete their own log entry.",
+        "tags": [
+          "FoodLogs"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Record ID"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Record deleted"
+          },
+          "403": {
+            "description": "Unauthorized (not the record owner)"
+          },
+          "404": {
+            "description": "Record not found"
+          }
+        }
+      }
+    }
+  }
+}

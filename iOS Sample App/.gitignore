@@ -1,0 +1,47 @@
+# macOS
+.DS_Store
+
+# Xcode Build
+build/
+DerivedData/
+
+# Xcode User Settings
+xcuserdata/
+*.xcuserstate
+*.moved-aside
+
+# Xcode Per-User Config (default.* are kept)
+!default.pbxuser
+*.pbxuser
+!default.mode1v3
+*.mode1v3
+!default.mode2v3
+*.mode2v3
+!default.perspectivev3
+*.perspectivev3
+
+# Xcode Misc
+*.hmap
+
+# Archives & Exports
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# CocoaPods
+Pods/
+
+# Carthage
+Carthage/Build/
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output
+
+# Injection III
+iOSInjectionProject/
+
+# Swift Package Manager
+.swiftpm/
