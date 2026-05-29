@@ -17,7 +17,7 @@ A production-grade **multi-agent system** for [OpenCode](https://opencode.ai) th
 
 ## Overview
 
-This project implements a **7-agent, 6-skill OpenCode system** with strict separation of concerns, deterministic delegation, and strong quality gates. It is designed for:
+This project implements a **7-agent, 9-skill OpenCode system** with strict separation of concerns, deterministic delegation, and strong quality gates. It is designed for:
 
 - 🍎 iOS / macOS development
 - 🔀 Kotlin Multiplatform (KMP) projects
@@ -124,14 +124,17 @@ Web-fetch only, no local file access. Used for framework comparisons, API versio
 
 ## Skills
 
-| Skill             | Trigger                               | Purpose                                                             |
-| ----------------- | ------------------------------------- | ------------------------------------------------------------------- |
-| `diagnose`        | "debug this", "diagnose", bug reports | 5-phase loop: reproduce → minimise → hypothesise → instrument → fix |
-| `zoom-out`        | "zoom out", unfamiliar code section   | Architectural mapping; shows broader context, callers, dependencies |
-| `graphify`        | knowledge graph requests              | Generates HTML + JSON knowledge graphs with community detection     |
-| `websearch`       | research, compare, find, investigate  | Senior technical research analyst skill                             |
-| `handoff`         | session wrap-up, context handoff      | Compacts conversation into structured handoff document              |
-| `grill-with-docs` | stress-test a plan, "grill me"        | Challenges plans against domain model and existing documentation    |
+| Skill                 | Used by              | Trigger                                          | Purpose                                                             |
+| --------------------- | -------------------- | ------------------------------------------------ | ------------------------------------------------------------------- |
+| `diagnose`            | scout, builder       | "debug this", "diagnose", bug reports            | 5-phase loop: reproduce → minimise → hypothesise → instrument → fix |
+| `zoom-out`            | scout, auditor, documenter | "zoom out", unfamiliar code section        | Architectural mapping; shows broader context, callers, dependencies |
+| `graphify`            | scout, auditor, documenter | knowledge graph requests                   | Generates HTML + JSON knowledge graphs with community detection     |
+| `handoff`             | —                    | session wrap-up, context handoff                 | Compacts conversation into structured handoff document              |
+| `grill-with-docs`     | —                    | stress-test a plan, "grill me"                   | Challenges plans against domain model and existing documentation    |
+| `supabase`            | builder              | Supabase DB, Auth, Edge Functions, RLS, Storage  | Current Supabase patterns; avoids hallucinating APIs                |
+| `ui-styling`          | builder              | UI components, Tailwind, shadcn/ui, design tokens | Component patterns and accessibility guidelines                    |
+| `swiftui-expert-skill`| builder              | SwiftUI views, state management, iOS/macOS APIs  | SwiftUI best practices, Liquid Glass adoption                       |
+| `grill-me`            | —                    | stress-test a plan, relentless interrogation     | Interview-style planning session; resolves decision branches        |
 
 ## Workflow
 
@@ -176,8 +179,8 @@ Phase 5: Reporting          → Summarize changes, caveats, follow-up items
 | ---------- | ---- | --------------------- | ----------------------------- | ---------------------------------------------- | --- | ---------------------------- |
 | Architect  | ✅   | ❌                    | ❌ (git read-only)            | scout, researcher                              | ❌  | All                          |
 | Conductor  | ✅   | ❌                    | ❌ (git read-only)            | scout, builder, auditor, researcher, documenter | ❌  | All                          |
-| Scout      | ✅   | ❌                    | ❌ (git/grep only)            | ❌                                             | ❌  | graphify, zoom-out, diagnose |
-| Builder    | ✅   | ✅ (all)              | ✅ (guarded)                  | ❌                                             | ❌  | diagnose                     |
+| Scout      | ✅   | ❌                    | ❌ (git/grep only)            | ❌                                             | ❌  | graphify, zoom-out, diagnose                  |
+| Builder    | ✅   | ✅ (all)              | ✅ (guarded)                  | ❌                                             | ❌  | diagnose, supabase, ui-styling, swiftui-expert-skill |
 | Auditor    | ✅   | ❌                    | ❌ (git/grep/audit only)      | ❌                                             | ❌  | zoom-out, graphify           |
 | Documenter | ✅   | ✅ (md/docs only)     | ✅ (read-only: grep/find/git) | ❌                                             | ❌  | graphify, zoom-out           |
 | Researcher | ❌   | ❌                    | ❌                            | ❌                                             | ✅  | —                            |
@@ -273,13 +276,16 @@ Agent models are configured individually in `.opencode/agents/*.md` frontmatter.
   - Auditor (quality gate, Opus model, CLARIFICATION_NEEDED verdict)
   - Documenter (single-pass documentation writer, cheap model, md/docs only)
   - Researcher (external research)
-- [x] 6 specialized skills
-  - `diagnose` — 5-phase debug loop
+- [x] 9 specialized skills
+  - `diagnose` — 5-phase debug loop (scout: phases 1–2, builder: phases 3–5)
   - `zoom-out` — architectural context mapping
   - `graphify` — knowledge graph generation
-  - `websearch` — technical research
   - `handoff` — session continuity
-  - `grill-with-docs` — interactive planning
+  - `grill-with-docs` — interactive planning against domain model
+  - `grill-me` — relentless requirement interrogation
+  - `supabase` — Supabase patterns (DB, Auth, Edge Functions, RLS, Storage)
+  - `ui-styling` — Tailwind CSS, shadcn/ui, design system tokens
+  - `swiftui-expert-skill` — SwiftUI best practices, iOS/macOS APIs, Liquid Glass
 - [x] Strict permission matrix enforced per agent
 - [x] Two-stage workflow: planning (architect) + execution (conductor)
 - [x] Confirmed plan block format (`---CONFIRMED EXECUTION PLAN---`)
