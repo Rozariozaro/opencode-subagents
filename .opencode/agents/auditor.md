@@ -15,6 +15,8 @@ permission:
     "rg *": allow
     "find *": allow
     "wc *": allow
+    "cat *": allow
+    "ls *": allow
     "npm audit*": allow
     "yarn audit*": allow
     "cargo audit*": allow

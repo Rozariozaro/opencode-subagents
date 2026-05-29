@@ -39,6 +39,9 @@ permission:
   skill:
     "*": deny
     "diagnose": allow
+    "supabase": allow
+    "ui-styling": allow
+    "swiftui-expert-skill": allow
   question: allow
 color: "#FF8C00"
 ---
@@ -314,3 +317,15 @@ Use when the task is a bug fix, crash, or performance regression — not a featu
 - **Phase 3** — Hypothesise: form one falsifiable hypothesis at a time. Never test multiple at once.
 - **Phase 4** — Instrument: add the minimal logging/assertions needed to confirm or refute. Remove after.
 - **Phase 5** — Fix, then write a regression test that would have caught the bug before committing.
+
+### supabase
+
+Use when the implementation involves Supabase products (Database, Auth, Edge Functions, RLS, Storage, Realtime). Load this skill to get current Supabase patterns and avoid hallucinating APIs. Invoke when plan steps reference Supabase client, migrations, RLS policies, or edge functions.
+
+### ui-styling
+
+Use when the implementation involves UI components, Tailwind CSS, shadcn/ui, or design system tokens. Load this skill to get current component patterns and accessibility guidelines. Invoke when plan steps reference UI components, styling, or layout.
+
+### swiftui-expert-skill
+
+Use when the implementation involves SwiftUI views, state management, or iOS/macOS-specific APIs. Load this skill to get current SwiftUI patterns and best practices. Invoke when plan steps reference SwiftUI views, modifiers, or Apple platform APIs.

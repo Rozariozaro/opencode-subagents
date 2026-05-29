@@ -95,7 +95,44 @@ When the plan is confirmed, always wrap the final plan in this exact block so co
 ```
 ---CONFIRMED EXECUTION PLAN START---
 [full numbered plan here]
+
+---TASK JSON START---
+[JSON array here]
+---TASK JSON END---
 ---CONFIRMED EXECUTION PLAN END---
+```
+
+The `---TASK JSON START---` block MUST contain a JSON array of task objects, one per plan step. Each object requires these fields:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `step_id` | number | Matches the numbered step in the markdown plan above |
+| `action` | string | Short verb phrase describing the operation |
+| `files` | string[] | Files to create or modify |
+| `depends_on` | number[] | step_ids this step must wait for (empty = no deps) |
+| `parallel` | boolean | true if this step can run alongside other steps with no shared deps |
+| `validation_cmd` | string | Command to verify this step succeeded (empty string if none) |
+
+Example:
+```json
+[
+  {
+    "step_id": 1,
+    "action": "Create auth service",
+    "files": ["src/auth/service.ts"],
+    "depends_on": [],
+    "parallel": true,
+    "validation_cmd": "npm run build"
+  },
+  {
+    "step_id": 2,
+    "action": "Add auth middleware",
+    "files": ["src/middleware/auth.ts"],
+    "depends_on": [1],
+    "parallel": false,
+    "validation_cmd": "npm test"
+  }
+]
 ```
 
 ## GRILLING RULES
@@ -126,6 +163,7 @@ When presenting the final plan:
    - Why: [rationale from scout findings]
    - Validation: [how to verify this step]
    - Parallel: [yes/no — can run alongside step N]
+   - JSON: [step_id: N, parallel: true/false, depends_on: [list step_ids or empty]]
 
 2. **[Action]** — [file/module]
    ...
